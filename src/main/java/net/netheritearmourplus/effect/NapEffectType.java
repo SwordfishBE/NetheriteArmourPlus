@@ -23,8 +23,7 @@ public enum NapEffectType {
     WATER_BREATHING("water_breathing", "Water Breathing", 0, false, () -> MobEffects.WATER_BREATHING),
     INVISIBILITY("invisibility", "Invisibility", 0, false, () -> MobEffects.INVISIBILITY),
     SLOW_FALLING("slow_falling", "Slow Falling", 0, false, () -> MobEffects.SLOW_FALLING),
-    NIGHT_VISION("night_vision", "Night Vision", 0, false, () -> MobEffects.NIGHT_VISION),
-    SNOW_WALKER("snow_walker", "Snow Walker", 0, true, NetheriteArmourPlus::snowWalkerEffectHolder);
+    NIGHT_VISION("night_vision", "Night Vision", 0, false, () -> MobEffects.NIGHT_VISION);
 
     private final String commandName;
     private final String displayName;

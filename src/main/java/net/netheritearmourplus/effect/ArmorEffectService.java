@@ -4,7 +4,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.netheritearmourplus.NetheriteArmourPlus;
@@ -48,7 +47,6 @@ public final class ArmorEffectService {
         for (NapEffectType effect : NapEffectType.values()) {
             boolean shouldApply = enabledEffects.contains(effect)
                     && hasArmorCombination
-                    && (!effect.requiresNetheriteBoots() || isWearingNetheriteBoots(player))
                     && PermissionHelper.canUseEffect(player, config, effect);
 
             if (shouldApply) {
@@ -70,19 +68,6 @@ public final class ArmorEffectService {
                 && player.getItemBySlot(EquipmentSlot.CHEST).is(Items.ELYTRA);
 
         return hasLeggings && hasBoots && (fullNetherite || netheriteWithElytra);
-    }
-
-    public static boolean canWalkOnPowderSnow(net.minecraft.world.entity.Entity entity) {
-        if (!(entity instanceof LivingEntity livingEntity)) {
-            return false;
-        }
-
-        return livingEntity.getEffect(NetheriteArmourPlus.snowWalkerEffectHolder()) != null
-                && livingEntity.getItemBySlot(EquipmentSlot.FEET).is(Items.NETHERITE_BOOTS);
-    }
-
-    private boolean isWearingNetheriteBoots(Player player) {
-        return player.getItemBySlot(EquipmentSlot.FEET).is(Items.NETHERITE_BOOTS);
     }
 
     private void ensureEffect(ServerPlayer player, NapEffectType effect) {

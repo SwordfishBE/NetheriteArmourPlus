@@ -35,9 +35,6 @@ These effects can be toggled with `/nap`:
 - `invisibility`
 - `slow_falling`
 - `night_vision`
-- `snow_walker`
-
-`Snow Walker` is a custom effect. While active, Netherite Boots let the player walk on powdered snow without falling through.
 
 ## Commands
 
@@ -56,7 +53,6 @@ Examples:
 ```text
 /nap speed1 true
 /nap night_vision true
-/nap snow_walker false
 /nap clear
 ```
 
@@ -86,7 +82,6 @@ netheritearmourplus.effect.water_breathing
 netheritearmourplus.effect.invisibility
 netheritearmourplus.effect.slow_falling
 netheritearmourplus.effect.night_vision
-netheritearmourplus.effect.snow_walker
 ```
 
 ## Config

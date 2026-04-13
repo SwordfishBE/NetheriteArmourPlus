@@ -4,12 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
 import net.netheritearmourplus.command.NapCommand;
 import net.netheritearmourplus.config.NapConfig;
 import net.netheritearmourplus.config.NapConfigManager;
@@ -27,13 +22,6 @@ public final class NetheriteArmourPlus implements ModInitializer {
     public static final String MOD_ID = "netheritearmourplus";
     public static final String MOD_NAME = "NetheriteArmourPlus";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-
-    public static final MobEffect SNOW_WALKER_EFFECT = Registry.register(
-            BuiltInRegistries.MOB_EFFECT,
-            id("snow_walker"),
-            new MobEffect(MobEffectCategory.BENEFICIAL, 0xE6F7FF) {
-            }
-    );
 
     private static NapConfigManager configManager;
     private static PlayerPreferenceManager preferenceManager;
@@ -86,10 +74,6 @@ public final class NetheriteArmourPlus implements ModInitializer {
     public static void reloadConfig() {
         config = configManager.load();
         logPermissionMode();
-    }
-
-    public static Holder<MobEffect> snowWalkerEffectHolder() {
-        return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(SNOW_WALKER_EFFECT);
     }
 
     public static String getLogPrefix() {
