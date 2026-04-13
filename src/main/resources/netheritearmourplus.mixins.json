@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.netheritearmourplus.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "mixins": [
+    "PowderSnowBlockMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
