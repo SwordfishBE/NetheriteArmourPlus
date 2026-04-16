@@ -65,11 +65,13 @@ public final class NapConfigManager {
         return """
                 {
                   "enabled": %s, // Master toggle for the mod. When false, no NAP effects are applied.
-                  "useLuckPerms": %s // When true and LuckPerms is installed, each effect uses its own permission node. Otherwise the mod is OP only.
+                  "useLuckPerms": %s, // When true and LuckPerms is installed, each effect uses its own permission node. Otherwise the mod is OP only.
+                  "armoredElytraSupport": %s // When true, Netherite armored elytra items from the Armored Elytra mod or compatible datapacks count as the required chest piece.
                 }
                 """.formatted(
                 config.isEnabled(),
-                config.isUseLuckPerms()
+                config.isUseLuckPerms(),
+                config.isArmoredElytraSupport()
         );
     }
 }

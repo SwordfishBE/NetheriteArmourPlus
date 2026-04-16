@@ -61,6 +61,7 @@ public final class NetheriteArmourPlus implements ModInitializer {
         NapConfig editableConfig = new NapConfig();
         editableConfig.setEnabled(config.isEnabled());
         editableConfig.setUseLuckPerms(config.isUseLuckPerms());
+        editableConfig.setArmoredElytraSupport(config.isArmoredElytraSupport());
         return editableConfig;
     }
 

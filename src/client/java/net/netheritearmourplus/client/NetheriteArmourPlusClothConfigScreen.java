@@ -42,6 +42,14 @@ public final class NetheriteArmourPlusClothConfigScreen {
                 .setSaveConsumer(editedConfig::setUseLuckPerms)
                 .build());
 
+        general.addEntry(entries.startBooleanToggle(
+                        Component.literal("Armored Elytra Support"),
+                        editedConfig.isArmoredElytraSupport())
+                .setDefaultValue(true)
+                .setTooltip(Component.literal("Treat supported Netherite armored elytra items as the required chest piece for the armor check."))
+                .setSaveConsumer(editedConfig::setArmoredElytraSupport)
+                .build());
+
         builder.setSavingRunnable(() -> NetheriteArmourPlus.applyEditedConfig(editedConfig));
         return builder.build();
     }

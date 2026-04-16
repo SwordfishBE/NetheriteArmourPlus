@@ -5,11 +5,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.netheritearmourplus.NetheriteArmourPlus;
 import net.netheritearmourplus.config.NapConfig;
 import net.netheritearmourplus.permission.PermissionHelper;
 import net.netheritearmourplus.player.PlayerPreferenceManager;
+import net.netheritearmourplus.util.ArmoredElytraSupport;
 
 import java.util.EnumSet;
 
@@ -58,16 +60,20 @@ public final class ArmorEffectService {
     }
 
     public boolean hasQualifiedArmorCombination(Player player) {
+        NapConfig config = NetheriteArmourPlus.getConfig();
         boolean hasHelmet = player.getItemBySlot(EquipmentSlot.HEAD).is(Items.NETHERITE_HELMET);
         boolean hasLeggings = player.getItemBySlot(EquipmentSlot.LEGS).is(Items.NETHERITE_LEGGINGS);
         boolean hasBoots = player.getItemBySlot(EquipmentSlot.FEET).is(Items.NETHERITE_BOOTS);
+        if (!hasHelmet || !hasLeggings || !hasBoots) {
+            return false;
+        }
 
-        boolean fullNetherite = hasHelmet
-                && player.getItemBySlot(EquipmentSlot.CHEST).is(Items.NETHERITE_CHESTPLATE);
-        boolean netheriteWithElytra = hasHelmet
-                && player.getItemBySlot(EquipmentSlot.CHEST).is(Items.ELYTRA);
+        ItemStack chestItem = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (chestItem.is(Items.NETHERITE_CHESTPLATE)) {
+            return true;
+        }
 
-        return hasLeggings && hasBoots && (fullNetherite || netheriteWithElytra);
+        return config.isArmoredElytraSupport() && ArmoredElytraSupport.isNetheriteArmoredElytra(chestItem);
     }
 
     private void ensureEffect(ServerPlayer player, NapEffectType effect) {

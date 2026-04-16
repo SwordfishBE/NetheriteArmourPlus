@@ -16,9 +16,11 @@
 Effects only apply when the player wears one of these combinations:
 
 - `Netherite Helmet + Netherite Chestplate + Netherite Leggings + Netherite Boots`
-- `Netherite Helmet + Elytra + Netherite Leggings + Netherite Boots`
+- `Netherite Helmet + Netherite Armored Elytra + Netherite Leggings + Netherite Boots`
 
 If one or more required armor pieces are removed, the effects are removed immediately.
+
+`NetheriteArmourPlus` supports Netherite armored elytra items created by the [**Armored Elytra**](https://modrinth.com/datapack/elytra-armor) mod and the compatible [**Vanilla Tweaks Armored Elytra**](https://www.vanillatweaks.net) datapack.
 
 ## Available Effects
 
@@ -97,7 +99,8 @@ Default config:
 ```json
 {
   "enabled": true,
-  "useLuckPerms": false
+  "useLuckPerms": false,
+  "armoredElytraSupport": true
 }
 ```
 
@@ -105,6 +108,7 @@ Default config:
 
 - `enabled`: Master toggle for the mod.
 - `useLuckPerms`: If `true`, LuckPerms permission nodes are used when LuckPerms is installed. Otherwise the mod falls back to OP-only access.
+- `armoredElytraSupport`: If `true`, supported Netherite armored elytra items count as the required chest piece.
 
 ## Optional Client Integration
 
