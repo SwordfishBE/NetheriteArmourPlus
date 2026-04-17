@@ -2,6 +2,7 @@ package net.netheritearmourplus.player;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import net.fabricmc.loader.api.FabricLoader;
 import net.netheritearmourplus.NetheriteArmourPlus;
 import net.netheritearmourplus.effect.NapEffectType;
@@ -46,8 +47,19 @@ public final class PlayerPreferenceManager {
             for (Map.Entry<String, Set<String>> entry : storedPreferences.players.entrySet()) {
                 try {
                     UUID playerId = UUID.fromString(entry.getKey());
+                    Set<String> storedEffects = entry.getValue();
+                    if (storedEffects == null) {
+                        NetheriteArmourPlus.LOGGER.warn("{} Ignoring null effect list for player '{}' in saved preferences.", NetheriteArmourPlus.getLogPrefix(), entry.getKey());
+                        continue;
+                    }
+
                     EnumSet<NapEffectType> effects = EnumSet.noneOf(NapEffectType.class);
-                    for (String effectId : entry.getValue()) {
+                    for (String effectId : storedEffects) {
+                        if (effectId == null) {
+                            NetheriteArmourPlus.LOGGER.warn("{} Ignoring null effect entry for player '{}' in saved preferences.", NetheriteArmourPlus.getLogPrefix(), entry.getKey());
+                            continue;
+                        }
+
                         NapEffectType effect = NapEffectType.fromStorageId(effectId);
                         if (effect != null) {
                             effects.add(effect);
@@ -62,7 +74,7 @@ public final class PlayerPreferenceManager {
             }
 
             NetheriteArmourPlus.LOGGER.debug("{} Loaded {} player preference entries.", NetheriteArmourPlus.getLogPrefix(), enabledEffectsByPlayer.size());
-        } catch (IOException exception) {
+        } catch (IOException | JsonParseException | IllegalStateException exception) {
             NetheriteArmourPlus.LOGGER.warn("{} Failed to load player preferences.", NetheriteArmourPlus.getLogPrefix(), exception);
         }
     }

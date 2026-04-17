@@ -2,6 +2,7 @@ package net.netheritearmourplus.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.netheritearmourplus.NetheriteArmourPlus;
@@ -43,9 +44,11 @@ public final class NapConfigManager {
             save(config);
             NetheriteArmourPlus.LOGGER.debug("{} Config loaded: {}", NetheriteArmourPlus.getLogPrefix(), config);
             return config;
-        } catch (IOException exception) {
+        } catch (IOException | JsonParseException | IllegalStateException exception) {
             NetheriteArmourPlus.LOGGER.warn("{} Failed to read config file. Using defaults.", NetheriteArmourPlus.getLogPrefix(), exception);
-            return new NapConfig();
+            NapConfig defaults = new NapConfig();
+            save(defaults);
+            return defaults;
         }
     }
 
