@@ -20,7 +20,7 @@ Effects only apply when the player wears one of these combinations:
 
 If one or more required armor pieces are removed, the effects are removed immediately.
 
-`NetheriteArmourPlus` supports Netherite armored elytra items created by the [**Armored Elytra**](https://modrinth.com/datapack/elytra-armor) mod and the compatible [**Vanilla Tweaks Armored Elytra**](https://www.vanillatweaks.net) datapack.
+`NetheriteArmourPlus` supports Netherite armored elytra items created by the [**Armored Elytra**](https://modrinth.com/datapack/elytra-armor) mod by DorkixAzIgazi, the [**Armored Elytra**](https://www.vanillatweaks.net) datapack by Vanilla Tweaks and the [**Plated_Elytra**](https://mc.voodoobeard.com) datapack by VoodooBeard.
 
 ## Available Effects
 

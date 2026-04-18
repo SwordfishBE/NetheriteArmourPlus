@@ -25,6 +25,9 @@ public final class ArmoredElytraSupport {
     private static final double EXPECTED_NETHERITE_TOUGHNESS = 3.0D;
     private static final double EXPECTED_NETHERITE_KNOCKBACK_RESISTANCE = 0.1D;
     private static final double EPSILON = 0.0001D;
+    private static final String PLATED_FLAG_KEY = "isPlated";
+    private static final String PLATED_MATERIAL_KEY = "Plate";
+    private static final String NETHERITE_PLATE_VALUE = "netherite";
 
     private ArmoredElytraSupport() {
     }
@@ -36,7 +39,8 @@ public final class ArmoredElytraSupport {
 
         CompoundTag customData = chestItem.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         return isModNetheriteArmoredElytra(chestItem, customData)
-                || isDatapackNetheriteArmoredElytra(chestItem, customData);
+                || isVanillaTweaksNetheriteArmoredElytra(chestItem, customData)
+                || isPlatedElytraNetheriteArmoredElytra(chestItem, customData);
     }
 
     private static boolean isModNetheriteArmoredElytra(ItemStack chestItem, CompoundTag customData) {
@@ -56,7 +60,7 @@ public final class ArmoredElytraSupport {
         return NETHERITE_CHESTPLATE_MODEL_STRING.equals(modelString);
     }
 
-    private static boolean isDatapackNetheriteArmoredElytra(ItemStack chestItem, CompoundTag customData) {
+    private static boolean isVanillaTweaksNetheriteArmoredElytra(ItemStack chestItem, CompoundTag customData) {
         Optional<CompoundTag> armoredElytraData = customData.getCompound(DATAPACK_ROOT_KEY);
         if (armoredElytraData.isEmpty() || !armoredElytraData.get().getBooleanOr("armored", false)) {
             return false;
@@ -65,6 +69,28 @@ public final class ArmoredElytraSupport {
         CustomModelData customModelData = chestItem.get(DataComponents.CUSTOM_MODEL_DATA);
         Float modelFloat = customModelData == null ? null : customModelData.getFloat(0);
         if (modelFloat == null || Math.abs(modelFloat - DATAPACK_NETHERITE_MODEL_FLOAT) > EPSILON) {
+            return false;
+        }
+
+        ItemAttributeModifiers attributes = chestItem.get(DataComponents.ATTRIBUTE_MODIFIERS);
+        if (attributes == null) {
+            return false;
+        }
+
+        double armor = attributes.compute(Attributes.ARMOR, 0.0D, EquipmentSlot.CHEST);
+        double toughness = attributes.compute(Attributes.ARMOR_TOUGHNESS, 0.0D, EquipmentSlot.CHEST);
+        double knockbackResistance = attributes.compute(Attributes.KNOCKBACK_RESISTANCE, 0.0D, EquipmentSlot.CHEST);
+        return nearlyEquals(armor, EXPECTED_NETHERITE_ARMOR)
+                && nearlyEquals(toughness, EXPECTED_NETHERITE_TOUGHNESS)
+                && nearlyEquals(knockbackResistance, EXPECTED_NETHERITE_KNOCKBACK_RESISTANCE);
+    }
+
+    private static boolean isPlatedElytraNetheriteArmoredElytra(ItemStack chestItem, CompoundTag customData) {
+        if (!customData.getBooleanOr(PLATED_FLAG_KEY, false)) {
+            return false;
+        }
+
+        if (!NETHERITE_PLATE_VALUE.equalsIgnoreCase(customData.getStringOr(PLATED_MATERIAL_KEY, ""))) {
             return false;
         }
 
