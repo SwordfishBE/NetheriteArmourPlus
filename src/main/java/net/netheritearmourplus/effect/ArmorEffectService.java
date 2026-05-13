@@ -2,11 +2,15 @@ package net.netheritearmourplus.effect;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.netheritearmourplus.NetheriteArmourPlus;
 import net.netheritearmourplus.config.NapConfig;
 import net.netheritearmourplus.permission.PermissionHelper;
@@ -44,11 +48,14 @@ public final class ArmorEffectService {
         }
 
         boolean hasArmorCombination = hasQualifiedArmorCombination(player);
+        boolean hasFireProtectionSet = hasFullFireProtectionSet(player);
         EnumSet<NapEffectType> enabledEffects = preferenceManager.getEnabledEffects(player.getUUID());
 
         for (NapEffectType effect : NapEffectType.values()) {
+            boolean hasRequiredArmor = hasArmorCombination
+                    || effect == NapEffectType.FIRE_RESISTANCE && hasFireProtectionSet;
             boolean shouldApply = enabledEffects.contains(effect)
-                    && hasArmorCombination
+                    && hasRequiredArmor
                     && PermissionHelper.canUseEffect(player, config, effect);
 
             if (shouldApply) {
@@ -74,6 +81,21 @@ public final class ArmorEffectService {
         }
 
         return config.isArmoredElytraSupport() && ArmoredElytraSupport.isNetheriteArmoredElytra(chestItem);
+    }
+
+    private boolean hasFullFireProtectionSet(ServerPlayer player) {
+        Holder<Enchantment> fireProtection = player.registryAccess()
+                .lookupOrThrow(Registries.ENCHANTMENT)
+                .getOrThrow(Enchantments.FIRE_PROTECTION);
+
+        return hasFireProtectionLevelFour(player.getItemBySlot(EquipmentSlot.HEAD), fireProtection)
+                && hasFireProtectionLevelFour(player.getItemBySlot(EquipmentSlot.CHEST), fireProtection)
+                && hasFireProtectionLevelFour(player.getItemBySlot(EquipmentSlot.LEGS), fireProtection)
+                && hasFireProtectionLevelFour(player.getItemBySlot(EquipmentSlot.FEET), fireProtection);
+    }
+
+    private boolean hasFireProtectionLevelFour(ItemStack stack, Holder<Enchantment> fireProtection) {
+        return !stack.isEmpty() && stack.getEnchantments().getLevel(fireProtection) >= 4;
     }
 
     private void ensureEffect(ServerPlayer player, NapEffectType effect) {

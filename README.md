@@ -20,6 +20,8 @@ Effects only apply when the player wears one of these combinations:
 
 If one or more required armor pieces are removed, the effects are removed immediately.
 
+`fire_resistance` can also activate from any full armor set when all four equipped items have `Fire Protection IV`.
+
 `NetheriteArmourPlus` supports Netherite armored elytra items created by the [**Armored Elytra**](https://modrinth.com/datapack/elytra-armor) mod by DorkixAzIgazi, the [**Armored Elytra**](https://www.vanillatweaks.net) datapack by Vanilla Tweaks and the [**Plated_Elytra**](https://mc.voodoobeard.com) datapack by VoodooBeard.
 
 ## Available Effects
