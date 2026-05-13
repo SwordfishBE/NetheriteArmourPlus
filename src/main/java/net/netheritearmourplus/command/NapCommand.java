@@ -50,11 +50,15 @@ public final class NapCommand {
         }
 
         boolean armorActive = NetheriteArmourPlus.getArmorEffectService().hasQualifiedArmorCombination(player);
+        boolean fireResistanceArmorActive = NetheriteArmourPlus.getArmorEffectService().hasQualifiedFireResistanceArmor(player);
         boolean luckPermsMode = PermissionHelper.isUsingLuckPerms(NetheriteArmourPlus.getConfig());
         EnumSet<NapEffectType> enabledEffects = NetheriteArmourPlus.getPreferenceManager().getEnabledEffects(player.getUUID());
 
         context.getSource().sendSuccess(() -> Component.literal(
                 "§6" + NetheriteArmourPlus.getLogPrefix() + "§r Armor combo: " + (armorActive ? "§aACTIVE" : "§cINACTIVE")
+        ), false);
+        context.getSource().sendSuccess(() -> Component.literal(
+                "§6" + NetheriteArmourPlus.getLogPrefix() + "§r Fire Resistance armor: " + (fireResistanceArmorActive ? "§aACTIVE" : "§cINACTIVE")
         ), false);
         context.getSource().sendSuccess(() -> Component.literal(
                 "§6" + NetheriteArmourPlus.getLogPrefix() + "§r Permission mode: " + (luckPermsMode ? "§bLuckPerms" : "§eOP only")
@@ -114,7 +118,10 @@ public final class NapCommand {
                 "§6" + NetheriteArmourPlus.getLogPrefix() + "§r " + effect.displayName() + " " + (enabled ? "§aenabled" : "§cdisabled") + "§r."
         ), false);
 
-        if (enabled && !NetheriteArmourPlus.getArmorEffectService().hasQualifiedArmorCombination(player)) {
+        boolean hasRequiredArmor = effect == NapEffectType.FIRE_RESISTANCE
+                ? NetheriteArmourPlus.getArmorEffectService().hasQualifiedFireResistanceArmor(player)
+                : NetheriteArmourPlus.getArmorEffectService().hasQualifiedArmorCombination(player);
+        if (enabled && !hasRequiredArmor) {
             context.getSource().sendSuccess(() -> Component.literal(
                     "§6" + NetheriteArmourPlus.getLogPrefix() + "§r The effect is saved and will activate when your armor combination is valid."
             ), false);

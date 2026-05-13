@@ -83,6 +83,10 @@ public final class ArmorEffectService {
         return config.isArmoredElytraSupport() && ArmoredElytraSupport.isNetheriteArmoredElytra(chestItem);
     }
 
+    public boolean hasQualifiedFireResistanceArmor(ServerPlayer player) {
+        return hasQualifiedArmorCombination(player) || hasFullFireProtectionSet(player);
+    }
+
     private boolean hasFullFireProtectionSet(ServerPlayer player) {
         Holder<Enchantment> fireProtection = player.registryAccess()
                 .lookupOrThrow(Registries.ENCHANTMENT)
