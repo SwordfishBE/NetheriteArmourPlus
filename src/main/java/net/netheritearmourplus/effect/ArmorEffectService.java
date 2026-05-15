@@ -18,6 +18,9 @@ import net.netheritearmourplus.player.PlayerPreferenceManager;
 import net.netheritearmourplus.util.ArmoredElytraSupport;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Applies and refreshes all managed effects for online players.
@@ -29,6 +32,7 @@ public final class ArmorEffectService {
     private static final int REFRESH_THRESHOLD_TICKS = 80;
 
     private final PlayerPreferenceManager preferenceManager;
+    private final Map<UUID, EnumSet<NapEffectType>> managedEffectsByPlayer = new HashMap<>();
 
     public ArmorEffectService(PlayerPreferenceManager preferenceManager) {
         this.preferenceManager = preferenceManager;
@@ -104,7 +108,11 @@ public final class ArmorEffectService {
 
     private void ensureEffect(ServerPlayer player, NapEffectType effect) {
         MobEffectInstance current = player.getEffect(effect.effectHolder());
-        if (current != null && current.getAmplifier() == effect.amplifier()) {
+        if (current != null) {
+            if (!isMarkedManaged(player, effect) || !isManagedEffect(current, effect)) {
+                unmarkManaged(player, effect);
+                return;
+            }
             if (!current.endsWithin(REFRESH_THRESHOLD_TICKS)) {
                 return;
             }
@@ -118,6 +126,11 @@ public final class ArmorEffectService {
                 false,
                 false
         ));
+
+        MobEffectInstance updated = player.getEffect(effect.effectHolder());
+        if (updated != null && isManagedEffect(updated, effect)) {
+            markManaged(player, effect);
+        }
     }
 
     private void clearManagedEffects(ServerPlayer player) {
@@ -127,26 +140,50 @@ public final class ArmorEffectService {
     }
 
     private void removeManagedEffect(ServerPlayer player, NapEffectType effect) {
-        MobEffectInstance current = player.getEffect(effect.effectHolder());
-        if (current == null) {
+        if (!isMarkedManaged(player, effect)) {
             return;
         }
 
-        // Only remove instances that match the signature we apply ourselves,
-        // so we do not wipe out unrelated potions or beacon effects.
-        if (current.getAmplifier() != effect.amplifier()) {
+        MobEffectInstance current = player.getEffect(effect.effectHolder());
+        if (current == null) {
+            unmarkManaged(player, effect);
             return;
         }
-        if (current.isAmbient()) {
-            return;
-        }
-        if (current.isVisible()) {
-            return;
-        }
-        if (!current.endsWithin(EFFECT_DURATION_TICKS)) {
+
+        if (!isManagedEffect(current, effect)) {
+            unmarkManaged(player, effect);
             return;
         }
 
         player.removeEffect(effect.effectHolder());
+        unmarkManaged(player, effect);
+    }
+
+    private boolean isManagedEffect(MobEffectInstance effectInstance, NapEffectType effect) {
+        return effectInstance.getAmplifier() == effect.amplifier()
+                && !effectInstance.isAmbient()
+                && !effectInstance.isVisible()
+                && !effectInstance.showIcon()
+                && effectInstance.endsWithin(EFFECT_DURATION_TICKS);
+    }
+
+    private boolean isMarkedManaged(ServerPlayer player, NapEffectType effect) {
+        return managedEffectsByPlayer.getOrDefault(player.getUUID(), EnumSet.noneOf(NapEffectType.class)).contains(effect);
+    }
+
+    private void markManaged(ServerPlayer player, NapEffectType effect) {
+        managedEffectsByPlayer.computeIfAbsent(player.getUUID(), ignored -> EnumSet.noneOf(NapEffectType.class)).add(effect);
+    }
+
+    private void unmarkManaged(ServerPlayer player, NapEffectType effect) {
+        EnumSet<NapEffectType> effects = managedEffectsByPlayer.get(player.getUUID());
+        if (effects == null) {
+            return;
+        }
+
+        effects.remove(effect);
+        if (effects.isEmpty()) {
+            managedEffectsByPlayer.remove(player.getUUID());
+        }
     }
 }
