@@ -22,7 +22,7 @@ public final class NetheriteArmourPlusModMenuIntegration implements ModMenuApi {
             Minecraft minecraft = Minecraft.getInstance();
             if (minecraft.getCurrentServer() != null && !minecraft.hasSingleplayerServer()) {
                 return new AlertScreen(
-                        () -> minecraft.setScreen(parent),
+                        () -> minecraft.setScreenAndShow(parent),
                         Component.literal("NetheriteArmourPlus Config"),
                         Component.literal("NetheriteArmourPlus uses a server-side config. While connected to a multiplayer server, Mod Menu on your client cannot change the server's settings. Edit the server config directly or use this screen in singleplayer.")
                 );
